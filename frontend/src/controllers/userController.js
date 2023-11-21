@@ -16,6 +16,7 @@ const UserController = {
             console.error('Logout error:', error);
         }
     },
+    // add more methods here if needed
 };
 
 export default UserController;

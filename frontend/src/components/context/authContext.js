@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import UserController from '../../controllers/userController';
 import UserModel from '../../models/userModel';
 
@@ -6,6 +6,13 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+            setUser(JSON.parse(savedUser));
+        }
+    }, []);
 
     const login = async (email, password) => {
         try {
@@ -16,7 +23,6 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('token', newUser.token);
         } catch (error) {
             console.error('Login failed:', error);
-            throw error; // rethrow the error to be handled by the caller
         }
     };
 

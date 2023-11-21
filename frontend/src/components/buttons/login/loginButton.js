@@ -2,7 +2,7 @@
 import React from 'react';
 import './loginButton.css';
 
-const LoginButton = ({ children, ...props }) => {
+const LoginButton = ({ children, className, ...props }) => {
     const buttonClassName = className || 'login-button';
     return (
         <button className={buttonClassName} {...props}>

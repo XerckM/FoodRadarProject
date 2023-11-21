@@ -1,7 +1,7 @@
 import React from 'react';
 import './logoutButton.css';
 
-const LogoutButton = ({ children, ...props }) => {
+const LogoutButton = ({ children, className, ...props }) => {
     const buttonClassName = className || 'logout-button';
     return (
         <button className={buttonClassName} {...props}>

@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LoginView } from '../views/login/loginView';
-import { IndexView } from '../views/index/indexView';
+import { IndexView } from '../views/index/indexView'
 import { SignupView } from '../views/signup/signupView';
 import { HomeView } from '../views/home/homeView';
 

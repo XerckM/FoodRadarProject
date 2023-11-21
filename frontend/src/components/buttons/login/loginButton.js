@@ -3,8 +3,9 @@ import React from 'react';
 import './loginButton.css';
 
 const LoginButton = ({ children, ...props }) => {
+    const buttonClassName = className || 'login-button';
     return (
-        <button className="login-button" {...props}>
+        <button className={buttonClassName} {...props}>
             {children}
         </button>
     );

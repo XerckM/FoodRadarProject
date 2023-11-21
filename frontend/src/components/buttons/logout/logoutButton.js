@@ -1,7 +1,7 @@
 import React from 'react';
-import './loginButton.css';
+import './logoutButton.css';
 
-const LoginButton = ({ children, ...props }) => {
+const LogoutButton = ({ children, ...props }) => {
     return (
         <button className="logout-button" {...props}>
             {children}
@@ -9,4 +9,4 @@ const LoginButton = ({ children, ...props }) => {
     );
 };
 
-export default LoginButton;
+export default LogoutButton;

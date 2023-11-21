@@ -20,8 +20,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const logout = async () => {
+        await UserController.logout();
+        setUser(null);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+    };
+
     return (
-        <AuthContext.Provider value={{ user, setUser, login }}>
+        <AuthContext.Provider value={{ user, setUser, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

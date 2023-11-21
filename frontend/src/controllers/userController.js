@@ -9,7 +9,7 @@ const UserController = {
     },
     logout: async () => {
         try {
-            await axios.get('/api/user/logout');
+            await axios.get(`${apiURL}/api/user/logout`, { withCredentials: true });
             console.log('User logged out');
         } catch (error) {
             console.error('Logout error:', error);

@@ -4,7 +4,8 @@ const apiURL = "http://localhost:8000";
 
 const UserController = {
     login: async (email, password) => {
-        const response = await axios.post(`${apiURL}/api/user/login`, { email, password });
+        const response = await axios.post(`${apiURL}/api/user/login`, { email, password }, { withCredentials: true });
+        console.log(response.data);
         return response;
     },
     logout: async () => {

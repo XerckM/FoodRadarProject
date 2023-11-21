@@ -21,15 +21,17 @@ export const LoginView = () => {
     };
 
     return (
-        <div>
-            <h1>Login</h1>
+        <div className="login-container">
+            <h1 className="login-title">Login</h1>
             <input
+                className="login-input"
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
             <input
+                className="login-input"
                 type="password"
                 placeholder="Password"
                 value={password}

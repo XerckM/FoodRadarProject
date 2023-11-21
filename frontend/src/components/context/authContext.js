@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await UserController.login(email, password);
-            const newUser = new UserModel(response.data);
+            const user = await UserController.login(email, password);
+            const newUser = new UserModel(user.data);
             setUser(newUser);
             localStorage.setItem('user', JSON.stringify(newUser));
             localStorage.setItem('token', newUser.token);

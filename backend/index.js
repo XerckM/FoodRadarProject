@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/user", userRouter);
-app.use("api/google", googleRouter);
+app.use("/api/google", googleRouter);
 
 app.use(notFound);
 app.use(errorHandler);

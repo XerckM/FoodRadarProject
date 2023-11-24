@@ -1,7 +1,8 @@
 const express = require("express");
-const googlePlacesHandler = require('../controller/googleAPIController')
+const { googlePlacesHandler, autocompleteHandler } = require('../controller/googleAPIController');
 const router = express.Router();
 
-router.post("/google-places", googlePlacesHandler);
+router.get("/google-places", googlePlacesHandler);
+router.get('/autocomplete', autocompleteHandler);
 
 module.exports = router;

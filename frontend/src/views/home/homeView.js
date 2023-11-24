@@ -3,6 +3,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LogoutButton from '../../components/buttons/logout/logoutButton';
+import GooglePlaces from "../../components/google/googlePlaces";
 import { AuthContext } from '../../components/context/authContext';
 
 export const HomeView = () => {
@@ -17,6 +18,7 @@ export const HomeView = () => {
     return (
         <div>
             <h1>Home Page</h1>
+            <GooglePlaces />
             <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
         </div>
     );

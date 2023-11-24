@@ -1,47 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './googlePlaces.css';
-import { loadGoogleMapsScript } from '../../utils/googleMapsScript';
+import { fetchPlaces, fetchAutocompleteSuggestions } from '../../controllers/googleAPIController';
 
 const GooglePlaces = () => {
     const [places, setPlaces] = useState([]);
     const [inputValue, setInputValue] = useState('');
-    const [selectedPlace, setSelectedPlace] = useState(null);
+    const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
+    const [selectedPlaceId, setSelectedPlaceId] = useState(null); // Store the selected place ID
 
-    useEffect(() => {
-        const initAutocomplete = () => {
-            const autocompleteInstance = new window.google.maps.places.Autocomplete(
-                document.getElementById('autocomplete'), { types: ['geocode'] }
-            );
-            autocompleteInstance.addListener('place_changed', () => {
-                const place = autocompleteInstance.getPlace();
-                if (place && place.formatted_address) {
-                    setInputValue(place.formatted_address);
-                    setSelectedPlace(place);
-                }
-            });
-        };
+    const handleInputChange = async (e) => {
+        setInputValue(e.target.value);
 
-        loadGoogleMapsScript('initAutocomplete')
-            .then(initAutocomplete)
-            .catch(error => console.error('Error loading Google Maps script', error));
-    }, []);
+        if (e.target.value.length > 1) {
+            const suggestions = await fetchAutocompleteSuggestions(e.target.value);
+            setAutocompleteSuggestions(suggestions);
+        } else {
+            setAutocompleteSuggestions([]);
+        }
+    };
 
-    const handleSearch = () => {
-        if (!selectedPlace || !selectedPlace.geometry) {
-            console.log("No place selected or place contains no geometry");
+    const handleSearch = async () => {
+        if (!selectedPlaceId) {
+            console.log("No place selected");
             return;
         }
 
-        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
-        service.nearbySearch({
-            location: selectedPlace.geometry.location,
-            radius: '500',
-            type: ['restaurant']
-        }, (results, status) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                setPlaces(results);
-            }
-        });
+        const fetchedPlaces = await fetchPlaces(selectedPlaceId);
+        setPlaces(fetchedPlaces);
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setInputValue(suggestion.description);
+        setSelectedPlaceId(suggestion.place_id);
+        setAutocompleteSuggestions([]);
     };
 
     return (
@@ -53,16 +44,29 @@ const GooglePlaces = () => {
                     id="autocomplete"
                     placeholder="Enter location"
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    onChange={handleInputChange}
                 />
                 <button onClick={handleSearch}>Search</button>
+                {autocompleteSuggestions.length > 0 && (
+                    <div className="autocomplete-dropdown">
+                        {autocompleteSuggestions.map((suggestion, index) => (
+                            <div
+                                key={index}
+                                className="autocomplete-item"
+                                onClick={() => handleSuggestionClick(suggestion)}
+                            >
+                                {suggestion.description}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="output-grid">
                 {places.map((place, index) => (
                     <div key={index} className="output-item">
                         <p>{place.name}</p>
-                        {place.photos ? (
-                            <img src={place.photos[0].getUrl()} alt={place.name} />
+                        {place.photoUrls && place.photoUrls.length > 0 ? (
+                            <img src={place.photoUrls[0]} alt={place.name} />
                         ) : (
                             <img src="https://via.placeholder.com/100" alt="Placeholder" />
                         )}

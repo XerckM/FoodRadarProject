@@ -10,12 +10,13 @@
 
 .search-bar-container {
     display: flex;
+    position: relative; /* This is important for positioning the dropdown */
     justify-content: center;
     margin-bottom: 20px;
 }
 
 .search-bar-container input[type="text"] {
-    width: 33%; /* Search bar span */
+    width: 33%; /* Adjust this as needed */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -33,6 +34,37 @@
 
 .search-bar-container button:hover {
     background-color: #45a049;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%; /* Position it right below the input field */
+    left: 50%; /* Center align the dropdown */
+    transform: translateX(-62%); /* Adjust for exact centering */
+    width: calc(33% + 20px); /* Match the width of the input field plus padding */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none; /* Seamless connection with the input field */
+    max-height: 300px;
+    overflow-y: auto; /* Makes it scrollable */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: adds a shadow for better visibility */
+    border-bottom-left-radius: 4px; /* Curved corners for the dropdown */
+    border-bottom-right-radius: 4px;
+}
+
+.autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+    text-align: left; /* Align text to the left */
+    border-bottom: 1px solid #ddd;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none; /* Remove the border for the last item */
+}
+
+.autocomplete-item:hover {
+    background-color: #f0f0f0;
 }
 
 .output-grid {

@@ -1,7 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import UserController from '../../controllers/userController';
 import UserModel from '../../models/userModel';
-import { unloadGoogleMapsScript } from '../../utils/googleMapsScript';
 
 export const AuthContext = createContext();
 
@@ -32,7 +31,6 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-        unloadGoogleMapsScript();
     };
 
     return (

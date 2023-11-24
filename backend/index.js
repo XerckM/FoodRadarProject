@@ -9,6 +9,7 @@ const dotenv = require('dotenv').config({path: "./vars/.env"});
 
 const PORT = process.env.PORT || 4000;
 const userRouter = require("./routes/userRoutes");
+const googleRouter = require("./routes/googleAPIRoutes")
 
 dbConnect();
 
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/user", userRouter);
+app.use("api/google", googleRouter);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -5,7 +5,6 @@ const { generateToken } = require("../config/jwtToken");
 const validateId = require("../utils/validateId");
 const { generateRefreshToken } = require("../config/refreshToken");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
 
 
 // Register A User
@@ -225,5 +224,5 @@ module.exports = {
     unblockUser,
     handleRefreshToken,
     logout,
-    updatePassword
+    updatePassword,
 };

@@ -18,8 +18,8 @@ export const HomeView = () => {
     return (
         <div>
             <h1>Home Page</h1>
-            <GooglePlaces />
             <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+            <GooglePlaces />
         </div>
     );
 };

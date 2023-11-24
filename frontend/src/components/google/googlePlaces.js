@@ -1,90 +1,74 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import './googlePlaces.css';
+import { loadGoogleMapsScript } from '../../utils/googleMapsScript';
 
 const GooglePlaces = () => {
-    const [autocomplete, setAutocomplete] = useState(null);
     const [places, setPlaces] = useState([]);
-    const mapRef = useRef(null);
-    const map = useRef(null);
+    const [inputValue, setInputValue] = useState('');
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
     useEffect(() => {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=places&callback=initAutocomplete`;
-        script.async = true;
-
-        window.initAutocomplete = () => {
-            setAutocomplete(new window.google.maps.places.Autocomplete(
+        const initAutocomplete = () => {
+            const autocompleteInstance = new window.google.maps.places.Autocomplete(
                 document.getElementById('autocomplete'), { types: ['geocode'] }
-            ));
-
-            map.current = new window.google.maps.Map(mapRef.current, {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8,
+            );
+            autocompleteInstance.addListener('place_changed', () => {
+                const place = autocompleteInstance.getPlace();
+                if (place && place.formatted_address) {
+                    setInputValue(place.formatted_address);
+                    setSelectedPlace(place);
+                }
             });
         };
 
-        script.onerror = () => {
-            console.error("Google Maps script failed to load.");
-        };
-
-        document.body.appendChild(script);
-
-        return () => {
-            document.body.removeChild(script);
-        };
+        loadGoogleMapsScript('initAutocomplete')
+            .then(initAutocomplete)
+            .catch(error => console.error('Error loading Google Maps script', error));
     }, []);
 
-    useEffect(() => {
-        if (autocomplete) {
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                console.log(place);
-
-                if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
-                    return;
-                }
-
-                map.current.setCenter(place.geometry.location);
-                map.current.setZoom(15);
-
-                const service = new window.google.maps.places.PlacesService(map.current);
-                service.nearbySearch({
-                    location: place.geometry.location,
-                    radius: '500',
-                    type: ['restaurant']
-                }, (results, status) => {
-                    if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                        setPlaces(results);
-                    }
-                });
-            });
+    const handleSearch = () => {
+        if (!selectedPlace || !selectedPlace.geometry) {
+            console.log("No place selected or place contains no geometry");
+            return;
         }
-    }, [autocomplete]);
+
+        const service = new window.google.maps.places.PlacesService(document.createElement('div'));
+        service.nearbySearch({
+            location: selectedPlace.geometry.location,
+            radius: '500',
+            type: ['restaurant']
+        }, (results, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                setPlaces(results);
+            }
+        });
+    };
 
     return (
         <div className="google-container">
-            <h1>Nearby Places Finder</h1>
-            <div>
-                <label>Enter location: </label>
-                <input type="text" id="autocomplete" placeholder="Enter location" />
+            <h1>Nearby Restaurants Finder</h1>
+            <div className="search-bar-container">
+                <input
+                    type="text"
+                    id="autocomplete"
+                    placeholder="Enter location"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                />
+                <button onClick={handleSearch}>Search</button>
             </div>
-            <div ref={mapRef} style={{ height: '400px', width: '100%' }}></div>
-            <table className="table table-bordered table-striped">
-                <tbody>
+            <div className="output-grid">
                 {places.map((place, index) => (
-                    <tr key={index}>
-                        <td>{place.name}</td>
-                        <td>
-                            {place.photos ? (
-                                <img src={place.photos[0].getUrl()} alt={place.name} width="100" height="100" />
-                            ) : (
-                                <img src="https://via.placeholder.com/100" alt="Placeholder" />
-                            )}
-                        </td>
-                    </tr>
+                    <div key={index} className="output-item">
+                        <p>{place.name}</p>
+                        {place.photos ? (
+                            <img src={place.photos[0].getUrl()} alt={place.name} />
+                        ) : (
+                            <img src="https://via.placeholder.com/100" alt="Placeholder" />
+                        )}
+                    </div>
                 ))}
-                </tbody>
-            </table>
+            </div>
         </div>
     );
 };
